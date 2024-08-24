@@ -40,7 +40,7 @@ stages:
       inputs:
         provider: 'aws'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)' # Root directory of the main repo
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-main' # Root directory of the main repo
         backendServiceAWS: 'aws-to-tf'
         backendAWSBucketName: 'for-tf-use'
         backendAWSKey: 'modules/terraform.tfstate'
