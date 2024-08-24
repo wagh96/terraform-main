@@ -1,14 +1,6 @@
 trigger:
 - main
 
-resources:
-  repositories:
-  - repository: modulesRepo
-    type: github
-    name: wagh96/terraform-modules
-    ref: refs/heads/main # Adjust branch as needed
-    endpoint: github.com_wagh96
-
 stages:
 
 - stage: Tf_Validation
@@ -21,12 +13,6 @@ stages:
     - task: TerraformInstaller@1
       inputs:
         terraformVersion: 'latest' # Install the latest version of Terraform
-
-    - checkout: self
-      displayName: 'Checkout main repo'
-
-    - checkout: modulesRepo
-      displayName: 'Checkout modules repo'
 
     - script: |
         echo "Current directory:"
