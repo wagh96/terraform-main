@@ -39,3 +39,15 @@ stages:
       inputs:
         provider: 'aws'
         command: 'validate'
+
+    - task: TerraformTaskV4@4
+      inputs:
+        provider: 'aws'
+        command: 'plan'
+        environmentServiceNameAWS: 'aws-to-tf'
+
+    - task: TerraformTaskV4@4
+      inputs:
+        provider: 'aws'
+        command: 'apply'
+        environmentServiceNameAWS: 'aws-to-tf'
