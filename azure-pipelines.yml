@@ -32,7 +32,7 @@ stages:
       inputs:
         provider: 'aws'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/$(root_directory)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
         backendServiceAWS: 'aws-to-tf'
         backendAWSBucketName: 'for-tf-use'
         backendAWSKey: 'modules/terraform.tfstate'
