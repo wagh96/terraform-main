@@ -14,13 +14,15 @@ stages:
 - stage: Tf_Validation
   displayName: Terraform Init and Validate
   jobs:
-  - job: terraformSetup
+  - job: terraformsetup
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: TerraformInstaller@1
       inputs:
         terraformVersion: 'latest' # Install the latest version of Terraform
+    
+    - checkout: self
 
     - checkout: modulesRepo
       displayName: 'Checkout modules repo'
@@ -30,6 +32,7 @@ stages:
       inputs:
         provider: 'aws'
         command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/$(root_directory)'
         backendServiceAWS: 'aws-to-tf'
         backendAWSBucketName: 'for-tf-use'
         backendAWSKey: 'keys/terraform.tfstate'
