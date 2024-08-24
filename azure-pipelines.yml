@@ -1,0 +1,44 @@
+trigger:
+- main
+
+resources:
+  repositories:
+  - repository: modulesRepo
+    type: github
+    name: your-org/terraform-modules-repo
+    ref: refs/heads/main # Adjust branch as needed
+    endpoint: github-to-azure
+
+stages:
+
+- stage: Tf_Validation
+  displayName: Terraform Init and Validate
+  jobs:
+  - job: terraformSetup
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest' # Install the latest version of Terraform
+
+    - checkout: self
+      displayName: 'Checkout main repo'
+    
+    - checkout: modulesRepo
+      displayName: 'Checkout modules repo'
+
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Init'
+      inputs:
+        provider: 'aws'
+        command: 'init'
+        backendServiceAWS: 'aws-to-tf'
+        backendAWSBucketName: 'for-tf-use'
+        backendAWSKey: 'keys/terraform.tfstate'
+
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Validate'
+      inputs:
+        provider: 'aws'
+        command: 'validate'
