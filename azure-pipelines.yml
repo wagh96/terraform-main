@@ -35,7 +35,7 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/$(root_directory)'
         backendServiceAWS: 'aws-to-tf'
         backendAWSBucketName: 'for-tf-use'
-        backendAWSKey: 'keys/terraform.tfstate'
+        backendAWSKey: 'modules/terraform.tfstate'
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Validate'
