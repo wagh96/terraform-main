@@ -50,7 +50,7 @@ stages:
       inputs:
         provider: 'aws'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)' # Root directory of the main repo
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-main' # Root directory of the main repo
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Plan'
@@ -58,7 +58,7 @@ stages:
         provider: 'aws'
         command: 'plan'
         environmentServiceNameAWS: 'aws-to-tf'
-        workingDirectory: '$(System.DefaultWorkingDirectory)' # Root directory of the main repo
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-main' # Root directory of the main repo
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Apply'
