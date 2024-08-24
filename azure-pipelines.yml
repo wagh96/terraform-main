@@ -5,9 +5,9 @@ resources:
   repositories:
   - repository: modulesRepo
     type: github
-    name: your-org/terraform-modules-repo
+    name: wagh96/terraform-modules
     ref: refs/heads/main # Adjust branch as needed
-    endpoint: github-to-azure
+    endpoint: modules-to-ado
 
 stages:
 
@@ -22,9 +22,6 @@ stages:
       inputs:
         terraformVersion: 'latest' # Install the latest version of Terraform
 
-    - checkout: self
-      displayName: 'Checkout main repo'
-    
     - checkout: modulesRepo
       displayName: 'Checkout modules repo'
 
