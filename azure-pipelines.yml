@@ -29,6 +29,13 @@ stages:
         provider: 'aws'
         command: 'validate'
 
+    - task: CmdLine@2
+      inputs:
+        script: |
+          echo Write your commands here
+          
+          ls -la
+
     - task: CopyFiles@2
       inputs:
         Contents: |
