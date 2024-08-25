@@ -14,13 +14,6 @@ stages:
       inputs:
         terraformVersion: 'latest' # Install the latest version of Terraform
 
-    - script: |
-        echo "Current directory:"
-        pwd
-        echo "Contents of the directory:"
-        ls -la
-      displayName: 'List files in working directory'
-
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
       inputs:
@@ -35,6 +28,13 @@ stages:
       inputs:
         provider: 'aws'
         command: 'validate'
+
+    - script: |
+        echo "Current directory:"
+        pwd
+        echo "Contents of the directory:"
+        ls -la
+      displayName: 'List files in working directory'
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Plan'
