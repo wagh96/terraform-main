@@ -39,8 +39,10 @@ stages:
     - task: CopyFiles@2
       inputs:
         Contents: |
-          **/*.tf
-          **/*.tfvars
+          main.tf
+          terraform.tfvars
+          provider.tf
+          variables.tf
         TargetFolder: '$(build.artifactstagingdirectory)'
       displayName: 'Copy tfvars and .tf files'
 
