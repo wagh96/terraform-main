@@ -32,7 +32,6 @@ stages:
     - task: CopyFiles@2
       inputs:
         Contents: |
-          .terraform/modules/**
           **/*.tf
           **/*.tfvars
         TargetFolder: '$(build.artifactstagingdirectory)'
