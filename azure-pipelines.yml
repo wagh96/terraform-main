@@ -42,11 +42,3 @@ stages:
         provider: 'aws'
         command: 'plan'
         environmentServiceNameAWS: 'aws-to-tf'
-
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Apply'
-      inputs:
-        provider: 'aws'
-        command: 'apply'
-        environmentServiceNameAWS: 'aws-to-tf'
-        commandOptions: '-auto-approve'
