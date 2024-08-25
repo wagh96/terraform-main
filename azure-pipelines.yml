@@ -29,16 +29,18 @@ stages:
         provider: 'aws'
         command: 'validate'
 
-    - script: |
-        echo "Current directory:"
-        pwd
-        echo "Contents of the directory:"
-        ls -la
-      displayName: 'List files in working directory'
-
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Plan'
+    - task: CopyFiles@2
       inputs:
-        provider: 'aws'
-        command: 'plan'
-        environmentServiceNameAWS: 'aws-to-tf'
+        Contents: |
+          .terraform/modules/**
+          **/*.tf
+          **/*.tfvars
+        TargetFolder: '$(build.artifactstagingdirectory)'
+      displayName: 'Copy tfvars and .tf files'
+
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)' # Publish the working directory where Terraform files are located
+        ArtifactName: 'terraform-modules'
+        publishLocation: 'Container'
