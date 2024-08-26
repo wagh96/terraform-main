@@ -41,8 +41,9 @@ stages:
           # Print exported environment variables for debugging
           echo "TF_VAR_cidr_block: $TF_VAR_cidr_block"
           echo "TF_VAR_region: $TF_VAR_region"
-
-          # Run Terraform commands
-          terraform plan -detailed-exitcode
-          environmentServiceNameAWS: 'aws-to-tf'
-      displayName: 'Run Terraform Commands with Exported Variables'
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Plan'
+      inputs:
+        provider: 'aws'
+        command: 'plan'
+        environmentServiceNameAWS: 'aws-to-tf'
