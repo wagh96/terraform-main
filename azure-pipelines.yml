@@ -43,6 +43,6 @@ stages:
           echo "TF_VAR_region: $TF_VAR_region"
 
           # Run Terraform commands
-          terraform validate
           terraform plan -detailed-exitcode
+          environmentServiceNameAWS: 'aws-to-tf'
       displayName: 'Run Terraform Commands with Exported Variables'
