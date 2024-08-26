@@ -36,12 +36,15 @@ stages:
       displayName: 'Print CIDR Block Variable'
 
     - task: TerraformTaskV4@4
+      displayName: 'Terraform Plan'
       inputs:
         provider: 'aws'
         command: 'plan'
         environmentServiceNameAWS: 'aws-to-tf'
         vars: |
-          cidr_block="192.168.0.0/16"
+          cidr_block=$(cidr_block)
+        outputPath: '$(Build.ArtifactStagingDirectory)/plan.out'
+
 
     - task: CopyFiles@2
       inputs:
