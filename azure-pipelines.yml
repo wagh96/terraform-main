@@ -17,10 +17,18 @@ stages:
         terraformVersion: 'latest'  # Install the latest version of Terraform
 
     - script: |
-        # Check the Terraform version
-        terraform --version
+        # Print the variable values for debugging
+        echo "cidr_block: $(cidr_block)"
+        echo "region: $(region)"
+        
+        # Export environment variables
         export TF_VAR_cidr_block="$(cidr_block)"
         export TF_VAR_region="$(region)"
+        
+        # Print the exported environment variables to confirm
+        echo "TF_VAR_cidr_block: $TF_VAR_cidr_block"
+        echo "TF_VAR_region: $TF_VAR_region"
+
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
       inputs:
