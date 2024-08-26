@@ -32,16 +32,16 @@ stages:
         provider: 'aws'
         command: 'validate'
 
-    - script: |
-        export cidr_block=$(cidr_block)
-        export region=$(region)
-      displayName: 'Environment Variables'
     - task: TerraformTaskV4@4
       displayName: 'Terraform Plan'
       inputs:
         provider: 'aws'
         command: 'plan'
+        commandOptions: |
+          -var "cidr_block=$(cidr_block)"
+          -var "region=$(region)"
         environmentServiceNameAWS: 'aws-to-tf'
+
 
     - task: CopyFiles@2
       inputs:
