@@ -2,10 +2,9 @@ trigger:
 - main
 
 variables:
-  - group: abc
+  - group: abc  # Ensure this variable group contains the variables 'cidr_block' and 'region'
 
 stages:
-
 - stage: Tf_Validation
   displayName: Terraform Init and Validate
   jobs:
@@ -15,7 +14,7 @@ stages:
     steps:
     - task: TerraformInstaller@1
       inputs:
-        terraformVersion: 'latest' # Install the latest version of Terraform
+        terraformVersion: 'latest'  # Install the latest version of Terraform
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
@@ -37,11 +36,8 @@ stages:
       inputs:
         provider: 'aws'
         command: 'plan'
-        commandOptions: |
-          -var "cidr_block=$(cidr_block)"
-          -var "region=$(region)"
+        commandOptions: '-var "cidr_block=$(cidr_block)" -var "region=$(region)"'
         environmentServiceNameAWS: 'aws-to-tf'
-
 
     - task: CopyFiles@2
       inputs:
@@ -52,9 +48,8 @@ stages:
         TargetFolder: '$(build.artifactstagingdirectory)'
       displayName: 'Copy tfvars and .tf files'
 
-
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(build.artifactstagingdirectory)' # Publish the working directory where Terraform files are located
+        PathtoPublish: '$(build.artifactstagingdirectory)'  # Publish the working directory where Terraform files are located
         ArtifactName: 'terraform-modules'
         publishLocation: 'Container'
