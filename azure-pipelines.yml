@@ -19,10 +19,7 @@ stages:
     - script: |
         # Check the Terraform version
         terraform --version
-
-    - task: CmdLine@2
-      inputs:
-        script: export TF_VAR_cidr_block="$cidr_block"
+        export TF_VAR_cidr_block="$cidr_block"
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
       inputs:
