@@ -16,6 +16,9 @@ stages:
       inputs:
         terraformVersion: 'latest'  # Install the latest version of Terraform
 
+    - script: |
+        # Check the Terraform version
+        terraform --version
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
       inputs:
@@ -31,23 +34,12 @@ stages:
         provider: 'aws'
         command: 'validate'
 
-    - script: |
-        export TF_VAR_cidr_block=$(cidr_block)
-        export TF_VAR_region=$(region)
-
-        echo "CIDR Block: $TF_VAR_cidr_block"
-        echo "Region: $TF_VAR_region"
-
-
     - task: TerraformTaskV4@4
       displayName: 'Terraform Plan'
       inputs:
         provider: 'aws'
         command: 'plan'
         environmentServiceNameAWS: 'aws-to-tf'
-      env:
-        cidr_block: $(cidr_block)
-        region: $(region)
 
     - task: CopyFiles@2
       inputs:
