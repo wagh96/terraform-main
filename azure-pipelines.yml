@@ -2,7 +2,7 @@ trigger:
 - main
 
 variables:
-  - group: abc  # Ensure this variable group contains the variables 'cidr_block' and 'region'
+  - group: abc  # Ensure this variable group contains 'cidr_block' and 'region'
 
 stages:
 - stage: Tf_Validation
@@ -14,7 +14,7 @@ stages:
     steps:
     - task: TerraformInstaller@1
       inputs:
-        terraformVersion: 'latest'  # Install the latest version of Terraform
+        terraformVersion: 'latest'
 
     - task: Bash@3
       inputs:
@@ -32,27 +32,9 @@ stages:
           # Print exported environment variables for debugging
           echo "TF_VAR_cidr_block: $TF_VAR_cidr_block"
           echo "TF_VAR_region: $TF_VAR_region"
+
+          # Run Terraform commands
+          terraform init
+          terraform validate
+          terraform plan -detailed-exitcode
       displayName: 'Run Terraform Commands with Exported Variables'
-
-
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Init'
-      inputs:
-        provider: 'aws'
-        command: 'init'
-        backendServiceAWS: 'aws-to-tf'
-        backendAWSBucketName: 'for-tf-use'
-        backendAWSKey: 'modules/terraform.tfstate'
-
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Validate'
-      inputs:
-        provider: 'aws'
-        command: 'validate'
-
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Plan'
-      inputs:
-        provider: 'aws'
-        command: 'plan'
-        environmentServiceNameAWS: 'aws-to-tf'
