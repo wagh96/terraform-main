@@ -38,7 +38,7 @@ stages:
         command: 'plan'
         environmentServiceNameAWS: 'aws-to-tf'
         vars: |
-          cidr_block=$(cidr_block)        
+          cidr_block="$(cidr_block)"
 
     - task: CopyFiles@2
       inputs:
