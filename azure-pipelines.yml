@@ -1,6 +1,9 @@
 trigger:
 - main
 
+variables:
+  - group: myvariable-group
+
 stages:
 
 - stage: Tf_Validation
@@ -29,18 +32,18 @@ stages:
         provider: 'aws'
         command: 'validate'
 
-    - task: CmdLine@2
+    - task: TerraformTaskV4@4
       inputs:
-        script: |
-          echo Write your commands here
-          
-          ls -la
+        provider: 'aws'
+        command: 'plan'
+        environmentServiceNameAWS: 'aws-to-tf'
+        vars: |
+          cidr_block=$(cidr_block)        
 
     - task: CopyFiles@2
       inputs:
         Contents: |
           main.tf
-          terraform.tfvars
           provider.tf
           variables.tf
         TargetFolder: '$(build.artifactstagingdirectory)'
