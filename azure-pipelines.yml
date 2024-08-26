@@ -39,7 +39,6 @@ stages:
         commandOptions: |
           -var "cidr_block=$(cidr_block)"
           -var "region=$(region)"
-          -detailed-exitcode
         environmentServiceNameAWS: 'aws-to-tf'
 
     - task: CopyFiles@2
