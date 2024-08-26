@@ -31,17 +31,13 @@ stages:
       inputs:
         provider: 'aws'
         command: 'validate'
-    
-    - script: |
-        export CIDR_BLOCK=$(cidr_block)
-        echo "CIDR_BLOCK=${CIDR_BLOCK}"
-      displayName: 'Export Environment Variables'
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Plan'
       inputs:
         provider: 'aws'
         command: 'plan'
+        commandOptions: '-var "cidr_block=$(cidr_block)"'
         environmentServiceNameAWS: 'aws-to-tf'
 
     - task: CopyFiles@2
