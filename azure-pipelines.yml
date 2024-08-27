@@ -31,9 +31,9 @@ stages:
         backendAWSKey: 'modules/terraform.tfstate'
 
     - script: |
-        export TF_VAR_cidr_block=$(cidr_block)
-        export TF_VAR_region=$(region)
-      displayName: 'export TF VARS' 
+        export TF_VAR_cidr_block=$(TF_VAR_cidr_block)
+        export TF_VAR_region=$(TF_VAR_region)
+      displayName: 'export TF VARS'
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Plan'
