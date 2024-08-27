@@ -30,6 +30,12 @@ stages:
         backendAWSBucketName: 'for-tf-use'
         backendAWSKey: 'modules/terraform.tfstate'
 
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Validate'
+      inputs:
+        provider: 'aws'
+        command: 'validate'
+
     - script: |
         echo "Debug: cidr_block=$(cidr_block)"
         echo "Debug: region=$(region)"
