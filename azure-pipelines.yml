@@ -16,19 +16,12 @@ stages:
       inputs:
         terraformVersion: 'latest'
 
-    - task: Bash@3
-      displayName: 'Configure GitHub Credentials'
-      inputs:
-        targetType: 'inline'
-        script: |
-          git config --global url."https://${{ variables.github_token }}@github.com/".insteadOf "https://github.com/"
-
-
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
       inputs:
         provider: 'aws'
         command: 'init'
+        commandOptions: 'git config --global url."https://${{ variables.github_token }}@github.com/".insteadOf "https://github.com/"'
         backendServiceAWS: 'aws-to-tf'
         backendAWSBucketName: 'for-tf-use'
         backendAWSKey: 'modules/terraform.tfstate'
