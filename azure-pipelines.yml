@@ -21,7 +21,6 @@ stages:
       inputs:
         provider: 'aws'
         command: 'init'
-        commandOptions: 'git config --global url."https://${{ variables.github_token }}@github.com/".insteadOf "https://github.com/"'
         backendServiceAWS: 'aws-to-tf'
         backendAWSBucketName: 'for-tf-use'
         backendAWSKey: 'modules/terraform.tfstate'
