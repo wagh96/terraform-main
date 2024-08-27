@@ -43,6 +43,6 @@ stages:
         provider: 'aws'
         command: 'plan'
         commandOptions: |
-          -var "cidr_block=$(cidr_block)"
+          -var "cidr_block=$(cidr_block)" \
           -var "region=$(region)"
         environmentServiceNameAWS: 'aws-to-tf'
