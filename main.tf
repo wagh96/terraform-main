@@ -1,5 +1,5 @@
 module "vpc" {
 
- source = "github.com/wagh96//terraform-modules/modules/VPC"
+ source = "https://github.com/wagh96/terraform-modules.git"
  cidr_block = var.cidr_block
 }
