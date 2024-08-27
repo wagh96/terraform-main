@@ -16,6 +16,11 @@ stages:
       inputs:
         terraformVersion: 'latest'
 
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: "github.com"
+        sshKeySecureFile: id_rsa
+
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
       inputs:
