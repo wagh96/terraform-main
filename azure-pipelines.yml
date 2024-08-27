@@ -48,3 +48,4 @@ stages:
         provider: 'aws'
         command: 'plan'
         environmentServiceNameAWS: 'aws-to-tf'
+        # No need to explicitly set environment variables here; they are already set by the previous script task
