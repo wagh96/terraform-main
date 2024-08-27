@@ -29,17 +29,9 @@ stages:
         backendServiceAWS: 'aws-to-tf'
         backendAWSBucketName: 'for-tf-use'
         backendAWSKey: 'modules/terraform.tfstate'
-
     - script: |
-        echo "##vso[task.setvariable variable=TF_VAR_cidr_block]$(cidr_block)"
-        echo "##vso[task.setvariable variable=TF_VAR_region]$(region)"
-      displayName: 'Set TF_VAR Variables'
-
-    - script: |
-        echo "CIDR Block: $TF_VAR_cidr_block"
-        echo "Region: $TF_VAR_region"
-      displayName: 'Display TF_VAR Variables'
-
+        echo "New variable value: $(cidr_block)"
+      name: useVars
 
     - task: TerraformTaskV4@4
       inputs:
