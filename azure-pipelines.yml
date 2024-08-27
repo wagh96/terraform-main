@@ -16,10 +16,10 @@ stages:
       inputs:
         terraformVersion: 'latest'
 
-    - task: InstallSSHKey@0
-      inputs:
-        knownHostsEntry: "github.com"
-        sshKeySecureFile: id_rsa
+    - script: |
+        echo "Configuring Git with PAT"
+        git config --global url."https://$(git_pat)@github.com/".insteadOf "https://github.com/"
+      displayName: 'Configure Git for PAT'
 
     - task: TerraformTaskV4@4
       displayName: 'Terraform Init'
