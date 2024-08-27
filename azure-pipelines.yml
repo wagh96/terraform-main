@@ -15,7 +15,8 @@ stages:
     - task: TerraformInstaller@1
       inputs:
         terraformVersion: 'latest'
-    
+      displayName: 'Install Terraform'
+
     - script: |
         echo "Configuring Git with PAT"
         git config --global url."https://$(git_pat)@github.com/".insteadOf "https://github.com/"
@@ -37,8 +38,6 @@ stages:
         command: 'validate'
 
     - script: |
-        echo "Debug: cidr_block=$(cidr_block)"
-        echo "Debug: region=$(region)"
         echo "##vso[task.setvariable variable=TF_VAR_cidr_block;]$(cidr_block)"
         echo "##vso[task.setvariable variable=TF_VAR_region;]$(region)"
       displayName: 'Set TF_VAR Variables'
