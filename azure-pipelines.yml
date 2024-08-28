@@ -38,7 +38,7 @@ stages:
         command: 'validate'
 
     - script: |
-        #export TF_VAR_cidr_block=$(cidr_block)
+        export TF_VAR_cidr_block=$(cidr_block)
         env | grep TF_VAR
       displayName: 'Export Terraform Variables'
 
