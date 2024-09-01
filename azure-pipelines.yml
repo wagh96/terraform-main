@@ -1,51 +1,23 @@
 trigger:
 - main
 
-variables:
-  - group: abc  # Ensure this variable group contains 'cidr_block' and 'region'
+pool:
+  vmImage: ubuntu-latest
 
-stages:
-- stage: Tf_Validation
-  displayName: Terraform Init and Validate
-  jobs:
-  - job: terraformsetup
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: TerraformInstaller@1
-      inputs:
-        terraformVersion: 'latest'
-      displayName: 'Install Terraform'
+steps:
+- checkout: self
 
-    - script: |
-        echo "Configuring Git with PAT"
-        git config --global url."https://$(git_pat)@github.com/".insteadOf "https://github.com/"
-      displayName: 'Configure Git for PAT'
+- task: SonarCloudPrepare@2
+  inputs:
+    SonarCloud: 'tf-to-sc'
+    organization: 'tf-to-sonarc'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: '017d27c8b3801e70d7b39311f4ffd190cd00845c'
+    cliSources: '.'
 
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Init'
-      inputs:
-        provider: 'aws'
-        command: 'init'
-        backendServiceAWS: 'aws-to-tf'
-        backendAWSBucketName: 'for-tf-use'
-        backendAWSKey: 'modules/terraform.tfstate'
+- task: SonarCloudAnalyze@2
 
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Validate'
-      inputs:
-        provider: 'aws'
-        command: 'validate'
-
-    - script: |
-        export TF_VAR_cidr_block="$(cidr_block)"
-        env | grep TF_VAR
-      displayName: 'Export Terraform Variables'
-
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform Plan'
-      inputs:
-        provider: 'aws'
-        command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
-        environmentServiceNameAWS: 'aws-to-tf'
+- task: SonarCloudPublish@2
+  inputs:
+    pollingTimeoutSec: '300'
