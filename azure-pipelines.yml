@@ -22,20 +22,20 @@ stages:
   - stage: DeployDev
     displayName: 'Deploy to Development'
     jobs:
-      - template: templates/terraform-deploy.yml
+      - template: templates/multi-env.yml
         parameters:
           targetEnv: 'dev'
 
   - stage: DeployQa
     displayName: 'Deploy to QA'
     jobs:
-      - template: templates/terraform-deploy.yml
+      - template: templates/multi-env.yml
         parameters:
           targetEnv: 'qa'
 
   - stage: DeployStg
     displayName: 'Deploy to Staging'
     jobs:
-      - template: templates/terraform-deploy.yml
+      - template: templates/multi-env.yml
         parameters:
           targetEnv: 'stg'
