@@ -11,8 +11,6 @@ pr:
 variables:
   - name: environmentVarGroup
     value: ''
-      #- name: dynamodbLockTable
-      #value: 'your-shared-lock-table'  # Your single DynamoDB lock table
 
 stages:
   - stage: Deploy
@@ -27,6 +25,11 @@ stages:
           - script: |
               echo "##vso[task.setvariable variable=changedPaths]$(git diff --name-only origin/develop HEAD)"
             displayName: 'Get changed files'
+
+          # Debugging output for changed paths
+          - script: |
+              echo "Changed paths: $(changedPaths)"
+            displayName: 'Debug Changed Paths'
 
           # Set the environment variable based on changed paths
           - script: |
@@ -55,26 +58,16 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         variables:
-          - group: $(environmentVarGroup)  # Reference the environment-specific variable group
+          - group: $(environments)  # Reference the environment-specific variable group
 
         steps:
-
           # Loop through each environment and deploy
           - script: |
               for env in $(deployEnvironments); do
                 echo "Deploying to $env"
 
-                # Set unique lock key based on environment
-                #lock_key="${env}-lock"
-
-                # Initialize Terraform with the shared DynamoDB table
+                # Initialize Terraform
                 terraform init
-
-                # Plan the Terraform deployment
-                terraform plan
-
-                # Apply the Terraform deployment
-                #terraform apply -auto-approve tfplan
               done
             displayName: 'Deploy to All Detected Environments'
             env:
