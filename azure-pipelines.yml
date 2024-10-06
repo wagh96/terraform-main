@@ -43,21 +43,19 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      - group: dev-grp  # Load Dev-specific variable group
+      - group: dev-group  # Load Dev-specific variable group
     steps:
-    - script: echo "Deploying to Dev environment"
-    - task: UseTerraform@0
-      inputs:
-        command: 'init'
-        workingDirectory: 'env/dev'
-    - task: UseTerraform@0
-      inputs:
-        command: 'plan'
-        workingDirectory: 'env/dev'
-    - task: UseTerraform@0
-      inputs:
-        command: 'apply'
-        workingDirectory: 'env/dev'
+    - script: |
+        echo "Deploying to Dev environment"
+        echo "Initializing Terraform..."
+        cd env/dev
+        terraform init
+
+        echo "Planning Terraform deployment..."
+        terraform plan -out=tfplan
+
+        echo "Applying Terraform plan..."
+        terraform apply -auto-approve tfplan
       env:
         AWS_ACCESS_KEY_ID: $(aws_access_key)
         AWS_SECRET_ACCESS_KEY: $(aws_secret_key)
@@ -68,25 +66,19 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      - group: qa-grp  # Load QA-specific variable group
+      - group: dev-group  # Load QA-specific variable group
     steps:
-    - script: echo "Deploying to QA environment"
-    - task: UseTerraform@0
-      inputs:
-        command: 'init'
-        workingDirectory: 'env/qa'
-    - task: UseTerraform@0
-      inputs:
-        command: 'plan'
-        workingDirectory: 'env/qa'
-        environmentServiceName: 'YourAWSServiceConnection'
-        additionalArgs: '-out=tfplan'
-    - task: UseTerraform@0
-      inputs:
-        command: 'apply'
-        workingDirectory: 'env/qa'
-        environmentServiceName: 'YourAWSServiceConnection'
-        additionalArgs: 'tfplan'
+    - script: |
+        echo "Deploying to QA environment"
+        echo "Initializing Terraform..."
+        cd env/qa
+        terraform init
+
+        echo "Planning Terraform deployment..."
+        terraform plan -out=tfplan
+
+        echo "Applying Terraform plan..."
+        terraform apply -auto-approve tfplan
       env:
         AWS_ACCESS_KEY_ID: $(aws_access_key)
         AWS_SECRET_ACCESS_KEY: $(aws_secret_key)
@@ -97,25 +89,19 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      - group: stg-grp  # Load Stage-specific variable group
+      - group: dev-group  # Load Stage-specific variable group
     steps:
-    - script: echo "Deploying to Stage environment"
-    - task: UseTerraform@0
-      inputs:
-        command: 'init'
-        workingDirectory: 'env/stage'
-    - task: UseTerraform@0
-      inputs:
-        command: 'plan'
-        workingDirectory: 'env/stage'
-        environmentServiceName: 'YourAWSServiceConnection'
-        additionalArgs: '-out=tfplan'
-    - task: UseTerraform@0
-      inputs:
-        command: 'apply'
-        workingDirectory: 'env/stage'
-        environmentServiceName: 'YourAWSServiceConnection'
-        additionalArgs: 'tfplan'
+    - script: |
+        echo "Deploying to Stage environment"
+        echo "Initializing Terraform..."
+        cd env/stage
+        terraform init
+
+        echo "Planning Terraform deployment..."
+        terraform plan -out=tfplan
+
+        echo "Applying Terraform plan..."
+        terraform apply -auto-approve tfplan
       env:
         AWS_ACCESS_KEY_ID: $(aws_access_key)
         AWS_SECRET_ACCESS_KEY: $(aws_secret_key)
