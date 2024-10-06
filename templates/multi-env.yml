@@ -18,25 +18,26 @@ jobs:
   variables:
     - group: ${{ parameters.variableGroup }}
   steps:
-  - checkout: self
+    - checkout: self
 
-  - script: |
-      echo "Initializing Terraform..."
-      cd ${{ parameters.environmentPath }}  # Change to the environment directory
-      terraform init
-    displayName: 'Terraform Init'
-    env:
-      AWS_ACCESS_KEY_ID: $(iam-key)
-      AWS_SECRET_ACCESS_KEY: $(iam-secret)
+    - script: |
+        echo "Initializing Terraform..."
+        cd ${{ parameters.environmentPath }}  # Change to the environment directory
+        terraform init
+      displayName: 'Terraform Init'
+      env:
+        AWS_ACCESS_KEY_ID: $(iam-key)
+        AWS_SECRET_ACCESS_KEY: $(iam-secret)
 
-  - script: |
-      echo "Planning Terraform..."
-      cd ${{ parameters.environmentPath }}  # Change to the environment directory
-      terraform plan -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
-    displayName: 'Terraform Plan'
+    - script: |
+        echo "Planning Terraform..."
+        cd ${{ parameters.environmentPath }}  # Change to the environment directory
+        terraform plan -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
+      displayName: 'Terraform Plan'
 
-  - script: |
-      echo "Applying Terraform..."
-      cd ${{ parameters.environmentPath }}  # Change to the environment directory
-      terraform apply -auto-approve -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
-    displayName: 'Terraform Apply'
+    - script: |
+        echo "Applying Terraform..."
+        cd ${{ parameters.environmentPath }}  # Change to the environment directory
+        terraform apply -auto-approve -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
+      displayName: 'Terraform Apply'
+
