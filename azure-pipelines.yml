@@ -18,6 +18,18 @@ parameters:
       - 'stg'
 
 stages:
+  - stage: LogAllVariables
+    displayName: 'Log All Environment Variables'
+    jobs:
+      - job: Log
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - script: |
+              echo "All Environment Variables:"
+              env
+            displayName: 'Log All Variables'
+
   - stage: LogPRInfo
     displayName: 'Log PR Title'
     jobs:
