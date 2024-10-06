@@ -18,6 +18,18 @@ parameters:
       - 'stg'
 
 stages:
+  - stage: LogPRInfo
+    displayName: 'Log PR Information'
+    jobs:
+      - job: Log
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - script: |
+              echo "PR Title: $(System.PullRequest.Title)"
+              echo "PR Description: $(System.PullRequest.Description)"
+            displayName: 'Log PR Title and Description'
+
   - stage: DeployDev
     displayName: 'Deploy to Development'
     condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), or(contains(variables['System.PullRequest.Title'], 'pr for dev'), contains(variables['System.PullRequest.Description'], 'pr for dev')))
