@@ -12,10 +12,10 @@ provider "aws" {
 }
 
 
-terraform {
-  backend "s3" {
-    bucket = "for-tf-use"
-    key    = "modules/terraform.tfstate"
-    region = "us-east-2"
-  }
-}
+#terraform {
+#  backend "s3" {
+#    bucket = "for-tf-use"
+#    key    = "modules/terraform.tfstate"
+#    region = "us-east-2"
+#  }
+#}
