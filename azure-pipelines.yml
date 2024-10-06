@@ -1,9 +1,6 @@
 trigger:
 - develop
 
-pr:
-- develop  # Trigger on PRs targeting the main branch
-
 jobs:
 - template: templates/multi-env.yml  # Updated path to the template
   parameters:
@@ -18,4 +15,3 @@ jobs:
     environmentPath: 'env/qa'
 
 # Add more environments as needed, following the same pattern
-
