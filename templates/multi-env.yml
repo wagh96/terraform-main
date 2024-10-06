@@ -10,9 +10,9 @@ jobs:
 - job: ${{ parameters.stageName }}
   condition: and(
       eq(variables['Build.Reason'], 'PullRequest'),
-      eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'),
+      eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'),  # Check for PR targeting develop
       contains(variables['System.PullRequest.Labels'], format('{0}', parameters.stageName))
-  )  # Check for PR targeting main and the correct label
+  )  # Check for the correct label
   pool:
     vmImage: 'ubuntu-latest'
   variables:
@@ -28,3 +28,15 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: $(iam-key)
       AWS_SECRET_ACCESS_KEY: $(iam-secret)
+
+  - script: |
+      echo "Planning Terraform..."
+      cd ${{ parameters.environmentPath }}  # Change to the environment directory
+      terraform plan -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
+    displayName: 'Terraform Plan'
+
+  - script: |
+      echo "Applying Terraform..."
+      cd ${{ parameters.environmentPath }}  # Change to the environment directory
+      terraform apply -auto-approve -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
+    displayName: 'Terraform Apply'
