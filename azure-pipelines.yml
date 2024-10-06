@@ -20,48 +20,36 @@ parameters:
 stages:
   - stage: DeployDev
     displayName: 'Deploy to Development'
-    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'dev-deploy'))
     jobs:
       - job: DeployDevJob
         pool:
           vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
-          - script: |
-              echo "Pull Request Labels: $(System.PullRequest.Labels)"
-            displayName: 'Debug Pull Request Labels'
           - template: templates/multi-env.yml
             parameters:
               targetEnv: 'dev'
 
   - stage: DeployQa
     displayName: 'Deploy to QA'
-    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'qa-deploy'))
     jobs:
       - job: DeployQaJob
         pool:
           vmImage: 'ubuntu-latest'
         steps:
-          - checkout: self
-          - script: |
-              echo "Pull Request Labels: $(System.PullRequest.Labels)"
-            displayName: 'Debug Pull Request Labels'
+          - checkout: self'
           - template: templates/multi-env.yml
             parameters:
               targetEnv: 'qa'
 
   - stage: DeployStg
     displayName: 'Deploy to Staging'
-    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'stg-deploy'))
     jobs:
       - job: DeployStgJob
         pool:
           vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
-          - script: |
-              echo "Pull Request Labels: $(System.PullRequest.Labels)"
-            displayName: 'Debug Pull Request Labels'
           - template: templates/multi-env.yml
             parameters:
               targetEnv: 'stg'
