@@ -1,82 +1,21 @@
 trigger:
-  branches:
-    include:
-      - develop  # Automatically triggers on commits to the develop branch
+- develop
 
 pr:
-  branches:
-    include:
-      - develop  # Trigger the pipeline for pull requests to the develop branch
+- develop  # Trigger on PRs targeting the main branch
 
-variables:
-  - name: environmentVarGroup
-    value: ''
-      #- name: dynamodbLockTable
-      #value: 'your-shared-lock-table'  # Your single DynamoDB lock table
+jobs:
+- template: templates/multi-env.yml  # Updated path to the template
+  parameters:
+    stageName: 'deploy-dev'  # The label used to trigger this stage
+    variableGroup: 'dev-group'
+    environmentPath: 'env/dev'
 
-stages:
-  - stage: Deploy
-    jobs:
-      - job: DetermineEnvironments
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - checkout: self
+- template: templates/terraform-deployment-template.yml  # Updated path to the template
+  parameters:
+    stageName: 'deploy-qa'  # The label used to trigger this stage
+    variableGroup: 'qa-group'
+    environmentPath: 'env/qa'
 
-          # Get the list of modified files in the pull request
-          - script: |
-              echo "##vso[task.setvariable variable=changedPaths]$(git diff --name-only origin/develop HEAD)"
-            displayName: 'Get changed files'
+# Add more environments as needed, following the same pattern
 
-          # Set the environment variable based on changed paths
-          - script: |
-              environments=""
-              if echo "$(changedPaths)" | grep -q "env/dev/"; then
-                environments="dev"
-              fi
-              if echo "$(changedPaths)" | grep -q "env/qa/"; then
-                environments="$environments stg"
-              fi
-              if echo "$(changedPaths)" | grep -q "env/stg/"; then
-                environments="$environments "
-              fi
-
-              echo "Changed environments: $environments"
-              echo "##vso[task.setvariable variable=deployEnvironments]$environments"
-              
-              # Set the variable group based on detected environments
-              if [[ ! -z "$environments" ]]; then
-                echo "##vso[task.setvariable variable=environmentVarGroup]iac-variables-${environments}"
-              fi
-            displayName: 'Determine Environments'
-
-      - job: InitPlan
-        dependsOn: DetermineEnvironments
-        pool:
-          vmImage: 'ubuntu-latest'
-        variables:
-          - group: $(environmentVarGroup)  # Reference the environment-specific variable group
-
-        steps:
-
-          # Loop through each environment and deploy
-          - script: |
-              for env in $(deployEnvironments); do
-                echo "Deploying to $env"
-
-                # Set unique lock key based on environment
-                #lock_key="${env}-lock"
-
-                # Initialize Terraform with the shared DynamoDB table
-                terraform init
-
-                # Plan the Terraform deployment
-                terraform plan
-
-                # Apply the Terraform deployment
-                #terraform apply -auto-approve tfplan
-              done
-            displayName: 'Deploy to All Detected Environments'
-            env:
-              AWS_ACCESS_KEY_ID: $(iam-key)  # Use environment variables directly
-              AWS_SECRET_ACCESS_KEY: $(iam-secret)

@@ -1,0 +1,33 @@
+parameters:
+  - name: stageName
+    type: string
+  - name: variableGroup
+    type: string
+  - name: environmentPath
+    type: string
+
+stages:
+- stage: ${{ parameters.stageName }}
+  condition: and(
+      eq(variables['Build.Reason'], 'PullRequest'),
+      eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/main'),
+      contains(variables['System.PullRequest.Labels'], format('{0}', parameters.stageName))
+  )  # Check for PR targeting main and the correct label
+  jobs:
+  - job: Terraform
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      - group: ${{ parameters.variableGroup }}
+    steps:
+    - checkout: self
+
+    - script: |
+        echo "Initializing Terraform..."
+        cd ${{ parameters.environmentPath }}  # Change to the environment directory
+        terraform init
+      displayName: 'Terraform Init'
+      env:
+        AWS_ACCESS_KEY_ID: $(iam-key)
+        AWS_SECRET_ACCESS_KEY: $(iam-secret)
+
