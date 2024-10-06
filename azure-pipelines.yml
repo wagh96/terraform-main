@@ -1,21 +1,14 @@
-trigger:
-  branches:
-    include:
-      - develop
-
-pr:
-  branches:
-    include:
-      - develop
-
 parameters:
   - name: environment
     type: string
-    default: 'dev'
+    default: dev
     values:
       - dev
       - qa
       - prod
+      
+trigger:
+  - develop
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -26,7 +19,7 @@ jobs:
   
   # Dynamically select the variable group based on the environment
   variables:
-    - group: ${{ parameters.environment == 'dev' && 'dev-group' || parameters.environment == 'qa' && 'QaVariableGroup' || parameters.environment == 'prod' && 'ProdVariableGroup' }}
+    - group: dev-group
 
   steps:
   - script: |
