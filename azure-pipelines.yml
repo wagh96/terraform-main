@@ -1,55 +1,32 @@
 trigger:
   branches:
     include:
-      - main  # Direct push triggers for main branch
+      - develop
 
 pr:
   branches:
     include:
-      - develop  # PR triggers only for changes to the develop branch
+      - develop
 
 parameters:
-  - name: targetEnv
+  - name: environment
     type: string
     default: 'dev'
     values:
-      - 'dev'
-      - 'qa'
-      - 'stg'
+      - dev
+      - qa
+      - prod
 
-stages:
-  - stage: DeployDev
-    displayName: 'Deploy to Development'
-    jobs:
-      - job: DeployDevJob
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - checkout: self
-          - template: templates/multi-env.yml
-            parameters:
-              targetEnv: 'dev'
+pool:
+  vmImage: 'ubuntu-latest'
 
-  - stage: DeployQa
-    displayName: 'Deploy to QA'
-    jobs:
-      - job: DeployQaJob
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - checkout: self'
-          - template: templates/multi-env.yml
-            parameters:
-              targetEnv: 'qa'
-
-  - stage: DeployStg
-    displayName: 'Deploy to Staging'
-    jobs:
-      - job: DeployStgJob
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - checkout: self
-          - template: templates/multi-env.yml
-            parameters:
-              targetEnv: 'stg'
+jobs:
+- job: Terraform
+  displayName: 'Run Terraform'
+  steps:
+  - script: |
+      echo "Selected environment: ${{ parameters.environment }}"
+      cd env/${{ parameters.environment }}
+      terraform init
+      terraform apply -auto-approve
+    displayName: 'Run Terraform'
