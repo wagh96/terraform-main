@@ -18,7 +18,9 @@ stages:
     steps:
     - script: |
         echo "Fetching the pull request title..."
-        prTitle="$(echo $SYSTEM_PULLREQUEST_TITLE)"  # Use the environment variable syntax
+        
+        # Fetch the pull request title using the correct environment variable
+        prTitle="$(echo $SYSTEM_PULLREQUEST_TITLE)"
         echo "Pull Request Title: $prTitle"
         
         if [[ "$prTitle" == *"deploy to dev"* ]]; then
