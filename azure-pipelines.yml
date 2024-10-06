@@ -35,10 +35,10 @@ stages:
                 environments="dev"
               fi
               if echo "$(changedPaths)" | grep -q "env/qa/"; then
-                environments="$environments stg"
+                environments="$environments qa"
               fi
               if echo "$(changedPaths)" | grep -q "env/stg/"; then
-                environments="$environments "
+                environments="$environments stg"
               fi
 
               echo "Changed environments: $environments"
