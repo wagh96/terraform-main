@@ -20,7 +20,7 @@ parameters:
 stages:
   - stage: DeployDev
     displayName: 'Deploy to Development'
-    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), contains(variables['Build.SourceVersionMessage'], 'pr for dev'))
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), contains(variables['System.PullRequest.Labels'], 'dev-deploy'))
     jobs:
       - template: templates/multi-env.yml
         parameters:
@@ -28,7 +28,7 @@ stages:
 
   - stage: DeployQa
     displayName: 'Deploy to QA'
-    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), contains(variables['Build.SourceVersionMessage'], 'pr for qa'))
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), contains(variables['System.PullRequest.Labels'], 'qa-deploy'))
     jobs:
       - template: templates/multi-env.yml
         parameters:
@@ -36,7 +36,7 @@ stages:
 
   - stage: DeployStg
     displayName: 'Deploy to Staging'
-    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), contains(variables['Build.SourceVersionMessage'], 'pr for stg'))
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), contains(variables['System.PullRequest.Labels'], 'stg-deploy'))
     jobs:
       - template: templates/multi-env.yml
         parameters:
