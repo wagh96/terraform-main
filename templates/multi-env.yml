@@ -11,9 +11,9 @@ jobs:
     displayName: ${{ parameters.stageName }}  # Optional: gives a name to the job
     condition: and(
       eq(variables['Build.Reason'], 'PullRequest'),
-      eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'),  # Check for PR targeting develop
-      contains(variables['System.PullRequest.Labels'], parameters.stageName)  # Adjusted for simplicity
-    )
+      eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'),
+      contains(variables['System.PullRequest.Labels'], parameters.stageName))
+
     pool:
       vmImage: 'ubuntu-latest'
     variables:
