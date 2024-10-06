@@ -26,8 +26,8 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
           - script: |
-              echo "PR Title: $(System.PullRequest.Title)"
-              echo "PR Description: $(System.PullRequest.Description)"
+              echo "PR Title: $SYSTEM_PULLREQUEST_TITLE"
+              echo "PR Description: $SYSTEM_PULLREQUEST_DESCRIPTION"
             displayName: 'Log PR Title and Description'
 
   - stage: DeployDev
