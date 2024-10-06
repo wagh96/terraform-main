@@ -3,15 +3,19 @@ trigger:
     include:
       - develop
 
-jobs:
-  - template: templates/multi-env.yml
-    parameters:
-      stageName: 'dev-deploy'
-      variableGroup: 'dev-group'
-      environmentPath: 'env/dev'
+stages:
+  - stage: DEV
+    jobs:
+      - template: templates/multi-env.yml
+        parameters:
+          stageName: 'dev-deploy'
+          variableGroup: 'dev-group'
+          environmentPath: 'env/dev'
 
-  - template: templates/multi-env.yml
-    parameters:
-      stageName: 'qa-deploy'
-      variableGroup: 'qa-group'
-      environmentPath: 'env/qa'
+  - stage: QA
+    jobs:
+      - template: templates/multi-env.yml
+        parameters:
+          stageName: 'qa-deploy'
+          variableGroup: 'qa-group'
+          environmentPath: 'env/qa'
