@@ -1,3 +1,22 @@
+trigger:
+  branches:
+    include:
+      - main  # Direct push triggers for main branch
+
+pr:
+  branches:
+    include:
+      - develop  # PR triggers only for changes to the develop branch
+
+parameters:
+  - name: targetEnv
+    type: string
+    default: 'dev'
+    values:
+      - 'dev'
+      - 'qa'
+      - 'stg'
+
 stages:
   - stage: DeployDev
     displayName: 'Deploy to Development'
