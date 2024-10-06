@@ -1,44 +1,25 @@
 parameters:
-  - name: stageName
-    type: string
-  - name: variableGroup
-    type: string
-  - name: environmentPath
+  - name: targetEnv
     type: string
 
 jobs:
-  - job: ${{ parameters.stageName }}
-    displayName: ${{ parameters.stageName }}  # Optional: gives a name to the job
-    condition: and(
-      eq(variables['Build.Reason'], 'PullRequest'),
-      eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'),
-      contains(variables['System.PullRequest.Labels'], parameters.stageName)  # Ensure this is in the template context
-    )
-
+  - job: Terraform
+    displayName: 'Terraform Apply for $(targetEnv)'
     pool:
       vmImage: 'ubuntu-latest'
-    variables:
-      - group: ${{ parameters.variableGroup }}
     steps:
       - checkout: self
 
+      # Set the environment directory based on the selected environment
       - script: |
-          echo "Initializing Terraform..."
-          cd ${{ parameters.environmentPath }}  # Change to the environment directory
+          ENV_DIR="env/$(targetEnv)"
+          echo "Using environment directory: $ENV_DIR"
+
+          # Initialize Terraform
+          cd $ENV_DIR
           terraform init
-        displayName: 'Terraform Init'
-        env:
-          AWS_ACCESS_KEY_ID: $(iam-key)
-          AWS_SECRET_ACCESS_KEY: $(iam-secret)
 
-      - script: |
-          echo "Planning Terraform..."
-          cd ${{ parameters.environmentPath }}  # Change to the environment directory
-          terraform plan -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
-        displayName: 'Terraform Plan'
-
-      - script: |
-          echo "Applying Terraform..."
-          cd ${{ parameters.environmentPath }}  # Change to the environment directory
-          terraform apply -auto-approve -var "resource_group_name=$(resource_group_name)" -var "location=$(location)"
-        displayName: 'Terraform Apply'
+          # Plan and apply
+          terraform plan -var-file="variables.tf"
+          terraform apply -auto-approve -var-file="variables.tf"
+        displayName: 'Deploying with Terraform'
