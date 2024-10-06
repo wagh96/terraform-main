@@ -4,7 +4,7 @@ parameters:
 
 jobs:
   - job: Terraform
-    displayName: 'Terraform Apply for $(targetEnv)'
+    displayName: 'Terraform Apply for ${{ parameters.targetEnv }}'
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -23,6 +23,6 @@ jobs:
           fi
 
           # Initialize Terraform
-          cd $ENV_DIR
+          cd "$ENV_DIR"
           terraform init
         displayName: 'Deploying with Terraform'
