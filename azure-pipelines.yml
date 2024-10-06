@@ -2,12 +2,11 @@ trigger:
   branches:
     include:
       - main  # Direct push triggers for main branch
-      - development  # Direct push triggers for development branch
 
 pr:
   branches:
     include:
-      - development  # PR triggers only for changes to the development branch
+      - develop  # PR triggers only for changes to the development branch
 
 parameters:
   - name: targetEnv
