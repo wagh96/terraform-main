@@ -1,21 +1,41 @@
 trigger:
   branches:
     include:
-      - develop
+      - main  # Direct push triggers for main branch
+      - develop  # Direct push triggers for develop branch
+
+pr:
+  branches:
+    include:
+      - develop  # PR triggers only for changes to the develop branch
+
+parameters:
+  - name: targetEnv
+    type: string
+    default: 'dev'  # Default environment
+    values:
+      - 'dev'
+      - 'qa'
+      - 'stg'
 
 stages:
-  - stage: DEV
+  - stage: DeployDev
+    displayName: 'Deploy to Development'
     jobs:
-      - template: templates/multi-env.yml
+      - template: templates/terraform-deploy.yml
         parameters:
-          stageName: 'dev-deploy'
-          variableGroup: 'dev-group'
-          environmentPath: 'env/dev'
+          targetEnv: 'dev'
 
-  - stage: QA
+  - stage: DeployQa
+    displayName: 'Deploy to QA'
     jobs:
-      - template: templates/multi-env.yml
+      - template: templates/terraform-deploy.yml
         parameters:
-          stageName: 'qa-deploy'
-          variableGroup: 'qa-group'
-          environmentPath: 'env/qa'
+          targetEnv: 'qa'
+
+  - stage: DeployStg
+    displayName: 'Deploy to Staging'
+    jobs:
+      - template: templates/terraform-deploy.yml
+        parameters:
+          targetEnv: 'stg'
