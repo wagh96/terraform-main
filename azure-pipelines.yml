@@ -20,9 +20,20 @@ parameters:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  variableGroup: 
+    - dev: 'dev-group'
+    - qa: 'QaVariableGroup'
+    - prod: 'ProdVariableGroup'
+
 jobs:
 - job: Terraform
   displayName: 'Run Terraform'
+  
+  # Dynamically reference the variable group based on the selected environment
+  variables:
+    - group: ${{ variables['variableGroup'][parameters.environment] }}
+
   steps:
   - script: |
       echo "Selected environment: ${{ parameters.environment }}"
