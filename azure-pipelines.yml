@@ -20,8 +20,7 @@ parameters:
 stages:
   - stage: DeployDev
     displayName: 'Deploy to Development'
-    condition: and(
-        startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'dev-deploy'))
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'dev-deploy'))
     jobs:
       - job: DeployDevJob
         pool:
@@ -37,8 +36,7 @@ stages:
 
   - stage: DeployQa
     displayName: 'Deploy to QA'
-    condition: and(
-        startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'qa-deploy'))
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'qa-deploy'))
     jobs:
       - job: DeployQaJob
         pool:
@@ -54,8 +52,7 @@ stages:
 
   - stage: DeployStg
     displayName: 'Deploy to Staging'
-    condition: and(
-        startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'stg-deploy'))
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'),contains(variables['System.PullRequest.Labels'], 'stg-deploy'))
     jobs:
       - job: DeployStgJob
         pool:
