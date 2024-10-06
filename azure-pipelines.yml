@@ -20,13 +20,7 @@ parameters:
 stages:
   - stage: DeployDev
     displayName: 'Deploy to Development'
-    condition: and(
-      startsWith(variables['Build.SourceBranch'], 'refs/pull/'),
-      or(
-        contains(toLower(variables['System.PullRequest.Title']), 'pr for dev'),
-        contains(toLower(variables['System.PullRequest.Description']), 'pr for dev')
-      )
-    )
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), or(contains(toLower(variables['System.PullRequest.Title']), 'pr for dev'), contains(toLower(variables['System.PullRequest.Description']), 'pr for dev')))
     jobs:
       - template: templates/multi-env.yml
         parameters:
@@ -34,13 +28,7 @@ stages:
 
   - stage: DeployQa
     displayName: 'Deploy to QA'
-    condition: and(
-      startsWith(variables['Build.SourceBranch'], 'refs/pull/'),
-      or(
-        contains(toLower(variables['System.PullRequest.Title']), 'pr for qa'),
-        contains(toLower(variables['System.PullRequest.Description']), 'pr for qa')
-      )
-    )
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), or(contains(toLower(variables['System.PullRequest.Title']), 'pr for qa'), contains(toLower(variables['System.PullRequest.Description']), 'pr for qa')))
     jobs:
       - template: templates/multi-env.yml
         parameters:
@@ -48,13 +36,7 @@ stages:
 
   - stage: DeployStg
     displayName: 'Deploy to Staging'
-    condition: and(
-      startsWith(variables['Build.SourceBranch'], 'refs/pull/'),
-      or(
-        contains(toLower(variables['System.PullRequest.Title']), 'pr for stg'),
-        contains(toLower(variables['System.PullRequest.Description']), 'pr for stg')
-      )
-    )
+    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/pull/'), or(contains(toLower(variables['System.PullRequest.Title']), 'pr for stg'), contains(toLower(variables['System.PullRequest.Description']), 'pr for stg')))
     jobs:
       - template: templates/multi-env.yml
         parameters:
