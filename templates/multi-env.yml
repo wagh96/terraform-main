@@ -9,10 +9,7 @@ parameters:
 jobs:
 - job: ${{ parameters.stageName }}
   condition: and(
-      eq(variables['Build.Reason'], 'PullRequest'),
-      eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'),  # Check for PR targeting develop
-      contains(variables['System.PullRequest.Labels'], format('{0}', parameters.stageName))
-  )  # Check for the correct label
+      eq(variables['Build.Reason'], 'PullRequest'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'), contains(variables['System.PullRequest.Labels'], format('{0}', parameters.stageName)))
   pool:
     vmImage: 'ubuntu-latest'
   variables:
