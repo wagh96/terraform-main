@@ -11,7 +11,7 @@ jobs:
     variableGroup: 'dev-group'
     environmentPath: 'env/dev'
 
-- template: templates/terraform-deployment-template.yml  # Updated path to the template
+- template: templates/multi-env.yml  # Updated path to the template
   parameters:
     stageName: 'deploy-qa'  # The label used to trigger this stage
     variableGroup: 'qa-group'
