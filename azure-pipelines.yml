@@ -1,17 +1,17 @@
 trigger:
-- develop
+  branches:
+    include:
+      - develop
 
 jobs:
-- template: templates/multi-env.yml  # Updated path to the template
-  parameters:
-    stageName: 'dev-deploy'  # The label used to trigger this stage
-    variableGroup: 'dev-group'
-    environmentPath: 'env/dev'
+  - template: templates/multi-env.yml
+    parameters:
+      stageName: 'dev-deploy'
+      variableGroup: 'dev-group'
+      environmentPath: 'env/dev'
 
-- template: templates/multi-env.yml  # Updated path to the template
-  parameters:
-    stageName: 'qa-deploy'  # The label used to trigger this stage
-    variableGroup: 'qa-group'
-    environmentPath: 'env/qa'
-
-# Add more environments as needed, following the same pattern
+  - template: templates/multi-env.yml
+    parameters:
+      stageName: 'qa-deploy'
+      variableGroup: 'qa-group'
+      environmentPath: 'env/qa'
