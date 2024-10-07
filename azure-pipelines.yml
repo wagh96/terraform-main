@@ -35,7 +35,7 @@ jobs:
     displayName: 'Deploy to QA'
     condition: eq(variables['Build.Reason'], 'PullRequest')
     variables:
-      - group: qa-grp  # Reference to the variable group for QA
+      - group: dev-grp  # Reference to the variable group for QA
     steps:
       - script: |
           git diff --name-only HEAD^ HEAD > changed_files.txt
@@ -52,7 +52,7 @@ jobs:
     displayName: 'Deploy to Staging'
     condition: eq(variables['Build.Reason'], 'PullRequest')
     variables:
-      - group: stg-grp  # Reference to the variable group for Staging
+      - group: dev-grp  # Reference to the variable group for Staging
     steps:
       - script: |
           git diff --name-only HEAD^ HEAD > changed_files.txt
