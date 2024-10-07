@@ -27,7 +27,7 @@ jobs:
 
   - job: DeployDev
     displayName: 'Deploy to Dev'
-    condition: eq(dependencies.CheckChanges.outputs['DevChanged'], 'true')
+    condition: eq(dependencies.CheckChanges.outputs['CheckChanges.DevChanged'], 'true')
     variables:
       - group: dev-grp  # Reference to the variable group for Dev
     steps:
@@ -39,7 +39,7 @@ jobs:
 
   - job: DeployQA
     displayName: 'Deploy to QA'
-    condition: eq(dependencies.CheckChanges.outputs['QAChanged'], 'true')
+    condition: eq(dependencies.CheckChanges.outputs['CheckChanges.QAChanged'], 'true')
     variables:
       - group: dev-grp  # Reference to the variable group for QA
     steps:
@@ -51,7 +51,7 @@ jobs:
 
   - job: DeployStg
     displayName: 'Deploy to Staging'
-    condition: eq(dependencies.CheckChanges.outputs['StgChanged'], 'true')
+    condition: eq(dependencies.CheckChanges.outputs['CheckChanges.StgChanged'], 'true')
     variables:
       - group: dev-grp  # Reference to the variable group for Staging
     steps:
