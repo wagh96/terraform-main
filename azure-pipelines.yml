@@ -35,17 +35,18 @@ jobs:
           echo "Checking for changes in env/stg/"
           STG_CHANGED=$(git diff --name-only origin/develop | grep -q 'env/stg/' && echo true || echo false)
           echo "STG_CHANGED=$STG_CHANGED"
-          echo "##vso[task.setvariable variable=StgChanged]$STG_CHANGED"
+          echo "##vso[task.setvariable variable=StgChanged]$ST_CHANGED"
         displayName: 'Check for Directory Changes'
 
   - job: DeployDev
     displayName: 'Deploy to Dev'
     dependsOn: CheckChanges
-    condition: eq(variables['DevChanged'], 'true')
-    variables:
-      - group: dev-grp  # Reference to the variable group for Dev
+    condition: always()  # Temporarily set to always run
     steps:
       - script: |
+          echo "DevChanged is: $(DevChanged)"
+          echo "Deploying to Dev..."
+          # Simulating the deployment steps
           cd env/dev
           terraform init
           terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
@@ -54,11 +55,12 @@ jobs:
   - job: DeployQA
     displayName: 'Deploy to QA'
     dependsOn: CheckChanges
-    condition: eq(variables['QAChanged'], 'true')
-    variables:
-      - group: dev-grp  # Reference to the variable group for QA
+    condition: always()  # Temporarily set to always run
     steps:
       - script: |
+          echo "QAChanged is: $(QAChanged)"
+          echo "Deploying to QA..."
+          # Simulating the deployment steps
           cd env/qa
           terraform init
           terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
@@ -67,11 +69,12 @@ jobs:
   - job: DeployStg
     displayName: 'Deploy to Staging'
     dependsOn: CheckChanges
-    condition: eq(variables['StgChanged'], 'true')
-    variables:
-      - group: dev-grp  # Reference to the variable group for Staging
+    condition: always()  # Temporarily set to always run
     steps:
       - script: |
+          echo "StgChanged is: $(StgChanged)"
+          echo "Deploying to Staging..."
+          # Simulating the deployment steps
           cd env/stg
           terraform init
           terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
