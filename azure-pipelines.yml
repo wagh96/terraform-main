@@ -16,7 +16,7 @@ pr:
 jobs:
   - job: DeployDev
     displayName: 'Deploy to Dev'
-    condition: eq(variables['Build.Reason'], 'PullRequest')
+    condition: and(eq(variables['Build.Reason'], 'PullRequest'), contains(git diff --name-only origin/develop, 'env/dev/'))
     variables:
       - group: dev-grp  # Reference to the variable group for Dev
     steps:
@@ -34,7 +34,7 @@ jobs:
 
   - job: DeployQA
     displayName: 'Deploy to QA'
-    condition: eq(variables['Build.Reason'], 'PullRequest')
+    condition: and(eq(variables['Build.Reason'], 'PullRequest'), contains(git diff --name-only origin/develop, 'env/qa/'))
     variables:
       - group: dev-grp  # Reference to the variable group for QA
     steps:
@@ -52,7 +52,7 @@ jobs:
 
   - job: DeployStg
     displayName: 'Deploy to Staging'
-    condition: eq(variables['Build.Reason'], 'PullRequest')
+    condition: and(eq(variables['Build.Reason'], 'PullRequest'), contains(git diff --name-only origin/develop, 'env/stg/'))
     variables:
       - group: dev-grp  # Reference to the variable group for Staging
     steps:
