@@ -40,6 +40,7 @@ jobs:
 
   - job: DeployDev
     displayName: 'Deploy to Dev'
+    dependsOn: CheckChanges
     condition: eq(variables['DevChanged'], 'true')
     variables:
       - group: dev-grp  # Reference to the variable group for Dev
@@ -52,6 +53,7 @@ jobs:
 
   - job: DeployQA
     displayName: 'Deploy to QA'
+    dependsOn: CheckChanges
     condition: eq(variables['QAChanged'], 'true')
     variables:
       - group: dev-grp  # Reference to the variable group for QA
@@ -64,6 +66,7 @@ jobs:
 
   - job: DeployStg
     displayName: 'Deploy to Staging'
+    dependsOn: CheckChanges
     condition: eq(variables['StgChanged'], 'true')
     variables:
       - group: dev-grp  # Reference to the variable group for Staging
