@@ -1,140 +1,40 @@
 trigger:
   branches:
     include:
-      - none
+      - main
 
 pr:
   branches:
     include:
       - develop
+  paths:
+    include:
+      - env/dev/**
+        - job: DeployDev
+        displayName: 'Deploy to Dev'
+        steps:
+          - script: |
+              cd env/dev
+              terraform init
+              terraform apply -auto-approve
+          displayName: 'Deploy Terraform for Dev'
 
-variables:
-  azureDevOpsOrg: 'akshaywagh256'  # Set your organization name
-  projectName: 'TF-Modules'  # Set your project name
-  repoName: 'terraform-main'  # Set your repository name
-  systemAccessToken: $(System.AccessToken)  # Use the built-in System.AccessToken
+      - env/qa/**
+        - job: DeployQA
+        displayName: 'Deploy to QA'
+        steps:
+          - script: |
+              cd env/qa
+              terraform init
+              terraform apply -auto-approve
+          displayName: 'Deploy Terraform for QA'
 
-stages:
-- stage: Prepare
-  jobs:
-  - job: SetEnvironment
-    displayName: 'Determine Target Environment'
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - script: |
-        echo "Installing jq..."
-        sudo apt-get update
-        sudo apt-get install -y jq
-      displayName: 'Install jq'
-
-    - script: |
-        echo "Checking for SYSTEM_PULLREQUEST_PULLREQUESTID..."
-        echo "Pull Request ID: $SYSTEM_PULLREQUEST_PULLREQUESTID"
-
-        echo "Fetching the pull request title..."
-        
-        prId=$SYSTEM_PULLREQUEST_PULLREQUESTID
-        
-        response=$(curl -s -w "%{http_code}" -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" \
-          "https://dev.azure.com/$azureDevOpsOrg/$projectName/_apis/git/repositories/$repoName/pullRequests/$prId?api-version=7.1-preview.1")
-        
-        httpCode="${response: -3}"  # Extract the last 3 characters as the HTTP status code
-        body="${response: 0:-3}"     # Extract the body of the response
-        
-        echo "HTTP Status Code: $httpCode"
-        echo "API Response Body: $body"
-        
-        if [ "$httpCode" -ne 200 ]; then
-            echo "Error fetching PR details: HTTP Status $httpCode"
-            exit 1
-        fi
-
-        prTitle=$(echo "$body" | jq -r '.title')
-        
-        echo "Pull Request Title: $prTitle"
-        
-        if [[ "$prTitle" == *"deploy to dev"* ]]; then
-          echo "##vso[task.setvariable variable=targetEnvironment;isOutput=true]dev"
-        elif [[ "$prTitle" == *"deploy to qa"* ]]; then
-          echo "##vso[task.setvariable variable=targetEnvironment;isOutput=true]qa"
-        elif [[ "$prTitle" == *"deploy to stage"* ]]; then
-          echo "##vso[task.setvariable variable=targetEnvironment;isOutput=true]stage"
-        else
-          echo "##vso[task.setvariable variable=targetEnvironment;isOutput=true]none"
-        fi
-      displayName: 'Set Deployment Environment'
-      env:
-        SYSTEM_ACCESSTOKEN: $(System.AccessToken)  # Enable the access token for the script
-
-- stage: Deploy
-  dependsOn: Prepare
-  jobs:
-  - job: DeployDev
-    displayName: 'Deploy to Dev Environment'
-    condition: eq(dependencies.Prepare.SetEnvironment.outputs['targetEnvironment'], 'dev')
-    pool:
-      vmImage: 'ubuntu-latest'
-    variables:
-      - group: dev-grp  # Load Dev-specific variable group
-    steps:
-    - script: |
-        echo "Deploying to Dev environment"
-        echo "Initializing Terraform..."
-        cd env/dev
-        terraform init
-
-        echo "Planning Terraform deployment..."
-        terraform plan -out=tfplan
-
-        echo "Applying Terraform plan..."
-        terraform apply -auto-approve tfplan
-      env:
-        AWS_ACCESS_KEY_ID: $(aws_access_key)
-        AWS_SECRET_ACCESS_KEY: $(aws_secret_key)
-
-  - job: DeployQa
-    displayName: 'Deploy to QA Environment'
-    condition: eq(dependencies.Prepare.SetEnvironment.outputs['targetEnvironment'], 'qa')
-    pool:
-      vmImage: 'ubuntu-latest'
-    variables:
-      - group: dev-grp  # Load QA-specific variable group
-    steps:
-    - script: |
-        echo "Deploying to QA environment"
-        echo "Initializing Terraform..."
-        cd env/qa
-        terraform init
-
-        echo "Planning Terraform deployment..."
-        terraform plan -out=tfplan
-
-        echo "Applying Terraform plan..."
-        terraform apply -auto-approve tfplan
-      env:
-        AWS_ACCESS_KEY_ID: $(aws_access_key)
-        AWS_SECRET_ACCESS_KEY: $(aws_secret_key)
-
-  - job: DeployStage
-    displayName: 'Deploy to Stage Environment'
-    condition: eq(dependencies.Prepare.SetEnvironment.outputs['targetEnvironment'], 'stage')
-    pool:
-      vmImage: 'ubuntu-latest'
-    variables:
-      - group: dev-grp  # Load Stage-specific variable group
-    steps:
-    - script: |
-        echo "Deploying to Stage environment"
-        echo "Initializing Terraform..."
-        cd env/stage
-        terraform init
-
-        echo "Planning Terraform deployment..."
-        terraform plan -out=tfplan
-
-        echo "Applying Terraform plan..."
-        terraform apply -auto-approve tfplan
-      env:
-        AWS_ACCESS_KEY_ID: $(aws_access_key)
-        AWS_SECRET_ACCESS_KEY: $(aws_secret_key)
+      - env/stg/**
+        - job: DeployStg
+        displayName: 'Deploy to Staging'
+        steps:
+          - script: |
+              cd env/stg
+              terraform init
+              terraform apply -auto-approve
+          displayName: 'Deploy Terraform for Staging'
