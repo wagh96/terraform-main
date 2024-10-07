@@ -10,31 +10,31 @@ pr:
   paths:
     include:
       - env/dev/**
-        - job: DeployDev
+      - job: DeployDev
         displayName: 'Deploy to Dev'
         steps:
           - script: |
               cd env/dev
               terraform init
               terraform apply -auto-approve
-          displayName: 'Deploy Terraform for Dev'
+            displayName: 'Deploy Terraform for Dev'
 
       - env/qa/**
-        - job: DeployQA
+      - job: DeployQA
         displayName: 'Deploy to QA'
         steps:
           - script: |
               cd env/qa
               terraform init
               terraform apply -auto-approve
-          displayName: 'Deploy Terraform for QA'
+            displayName: 'Deploy Terraform for QA'
 
       - env/stg/**
-        - job: DeployStg
+      - job: DeployStg
         displayName: 'Deploy to Staging'
         steps:
           - script: |
               cd env/stg
               terraform init
               terraform apply -auto-approve
-          displayName: 'Deploy Terraform for Staging'
+          - displayName: 'Deploy Terraform for Staging'
