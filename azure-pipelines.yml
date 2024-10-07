@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - develop
+      - none
 
 pr:
   branches:
@@ -89,7 +89,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      - group: qa-grp  # Load QA-specific variable group
+      - group: dev-grp  # Load QA-specific variable group
     steps:
     - script: |
         echo "Deploying to QA environment"
@@ -112,7 +112,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      - group: stg-grp  # Load Stage-specific variable group
+      - group: dev-grp  # Load Stage-specific variable group
     steps:
     - script: |
         echo "Deploying to Stage environment"
