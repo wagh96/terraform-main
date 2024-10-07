@@ -37,7 +37,7 @@ jobs:
             echo "Deploying to Dev..."
             cd env/dev
             terraform init
-            terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
+            terraform plan
           fi
 
           if [ "$(deployToQA)" = "true" ]; then
