@@ -1,6 +1,11 @@
 trigger:
   branches:
     include:
+      - main
+
+pr:
+  branches:
+    include:
       - develop
   paths:
     include:
@@ -30,7 +35,7 @@ jobs:
     displayName: 'Deploy to QA'
     condition: eq(variables['Build.Reason'], 'PullRequest')
     variables:
-      - group: dev-grp  # Reference to the variable group for QA
+      - group: qa-grp  # Reference to the variable group for QA
     steps:
       - script: |
           git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
@@ -47,7 +52,7 @@ jobs:
     displayName: 'Deploy to Staging'
     condition: eq(variables['Build.Reason'], 'PullRequest')
     variables:
-      - group: dev-grp  # Reference to the variable group for Staging
+      - group: stg-grp  # Reference to the variable group for Staging
     steps:
       - script: |
           git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
