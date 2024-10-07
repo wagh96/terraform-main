@@ -30,18 +30,28 @@ stages:
 
     - script: |
         echo "Checking for SYSTEM_PULLREQUEST_PULLREQUESTID..."
-        echo "Pull Request ID: $SYSTEM_PULLREQUEST_PULLREQUESTID"  # Print the Pull Request ID
+        echo "Pull Request ID: $SYSTEM_PULLREQUEST_PULLREQUESTID"
 
         echo "Fetching the pull request title..."
         
-        # Use the environment variable directly
         prId=$SYSTEM_PULLREQUEST_PULLREQUESTID
         
-        # Call the Azure DevOps REST API to fetch the PR details
-        prTitle=$(curl -s -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" \
-          "https://dev.azure.com/$azureDevOpsOrg/$projectName/_apis/git/repositories/$repoName/pullRequests/$prId?api-version=7.1-preview.1" | \
-          jq -r '.title')
+        response=$(curl -s -w "%{http_code}" -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" \
+          "https://dev.azure.com/$azureDevOpsOrg/$projectName/_apis/git/repositories/$repoName/pullRequests/$prId?api-version=7.1-preview.1")
+        
+        httpCode="${response: -3}"  # Extract the last 3 characters as the HTTP status code
+        body="${response: 0:-3}"     # Extract the body of the response
+        
+        echo "HTTP Status Code: $httpCode"
+        echo "API Response Body: $body"
+        
+        if [ "$httpCode" -ne 200 ]; then
+            echo "Error fetching PR details: HTTP Status $httpCode"
+            exit 1
+        fi
 
+        prTitle=$(echo "$body" | jq -r '.title')
+        
         echo "Pull Request Title: $prTitle"
         
         if [[ "$prTitle" == *"deploy to dev"* ]]; then
