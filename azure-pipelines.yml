@@ -41,10 +41,10 @@ jobs:
   - job: DeployDev
     displayName: 'Deploy to Dev'
     dependsOn: CheckChanges
-    condition: always()  # Temporarily set to always run
+    condition: eq(dependencies.CheckChanges.outputs['DevChanged'], 'true')
     steps:
       - script: |
-          echo "DevChanged is: $(DevChanged)"
+          echo "DevChanged is: $(DevChanged)"  # Correctly reference the output variable
           if [ "$(DevChanged)" = "true" ]; then
             echo "Deploying to Dev..."
             cd env/dev
@@ -58,7 +58,7 @@ jobs:
   - job: DeployQA
     displayName: 'Deploy to QA'
     dependsOn: CheckChanges
-    condition: always()  # Temporarily set to always run
+    condition: eq(dependencies.CheckChanges.outputs['QAChanged'], 'true')
     steps:
       - script: |
           echo "QAChanged is: $(QAChanged)"
@@ -75,7 +75,7 @@ jobs:
   - job: DeployStg
     displayName: 'Deploy to Staging'
     dependsOn: CheckChanges
-    condition: always()  # Temporarily set to always run
+    condition: eq(dependencies.CheckChanges.outputs['StgChanged'], 'true')
     steps:
       - script: |
           echo "StgChanged is: $(StgChanged)"
