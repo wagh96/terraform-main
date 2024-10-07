@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - none
+      - develop
 
 pr:
   branches:
@@ -9,9 +9,9 @@ pr:
       - develop
 
 variables:
-  azureDevOpsOrg: 'your-organization-name'  # Set your organization name
-  projectName: 'your-project-name'  # Set your project name
-  repoName: 'your-repo-name'  # Set your repository name
+  azureDevOpsOrg: 'akshaywagh256'  # Set your organization name
+  projectName: 'TF-Modules'  # Set your project name
+  repoName: 'terraform-main'  # Set your repository name
   systemAccessToken: $(System.AccessToken)  # Use the built-in System.AccessToken
 
 stages:
@@ -29,10 +29,13 @@ stages:
       displayName: 'Install jq'
 
     - script: |
+        echo "Checking for SYSTEM_PULLREQUEST_PULLREQUESTID..."
+        env | grep SYSTEM_PULLREQUEST_PULLREQUESTID
+        
         echo "Fetching the pull request title..."
         
         # Get the Pull Request ID from the environment variable
-        prId=$(System_PULLREQUEST_PULLREQUESTID)
+        prId=$(SYSTEM_PULLREQUEST_PULLREQUESTID)
         
         # Call the Azure DevOps REST API to fetch the PR details
         prTitle=$(curl -s -H "Authorization: Bearer $systemAccessToken" \
