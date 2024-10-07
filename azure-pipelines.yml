@@ -63,4 +63,4 @@ jobs:
           else
             echo "No changes in env/stg/, skipping deployment."
           fi
-        displayName: 'Deploy Terraform 
+        displayName: 'Deploy Terraform'
