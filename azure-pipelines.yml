@@ -21,8 +21,8 @@ jobs:
       - group: dev-grp  # Reference to the variable group for Dev
     steps:
       - script: |
-          git diff --name-only HEAD^ HEAD > changed_files.txt
-          if grep -q 'env/dev/' changed_files.txt; then
+          git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
+          if git diff --name-only origin/develop | grep -q 'env/dev/'; then
             cd env/dev
             terraform init
             terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
@@ -38,8 +38,8 @@ jobs:
       - group: dev-grp  # Reference to the variable group for QA
     steps:
       - script: |
-          git diff --name-only HEAD^ HEAD > changed_files.txt
-          if grep -q 'env/qa/' changed_files.txt; then
+          git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
+          if git diff --name-only origin/develop | grep -q 'env/qa/'; then
             cd env/qa
             terraform init
             terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
@@ -55,12 +55,12 @@ jobs:
       - group: dev-grp  # Reference to the variable group for Staging
     steps:
       - script: |
-          git diff --name-only HEAD^ HEAD > changed_files.txt
-          if grep -q 'env/stg/' changed_files.txt; then
+          git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
+          if git diff --name-only origin/develop | grep -q 'env/stg/'; then
             cd env/stg
             terraform init
             terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
           else
             echo "No changes in env/stg/, skipping deployment."
           fi
-        displayName: 'Deploy Terraform'
+        displayName: 'Deploy Terraform for Staging'
