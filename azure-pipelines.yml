@@ -10,31 +10,57 @@ pr:
   paths:
     include:
       - env/dev/**
-      - job: DeployDev
-        displayName: 'Deploy to Dev'
-        steps:
-          - script: |
-              cd env/dev
-              terraform init
-              terraform apply -auto-approve
-            displayName: 'Deploy Terraform for Dev'
-
       - env/qa/**
-      - job: DeployQA
-        displayName: 'Deploy to QA'
-        steps:
-          - script: |
-              cd env/qa
-              terraform init
-              terraform apply -auto-approve
-            displayName: 'Deploy Terraform for QA'
-
       - env/stg/**
-      - job: DeployStg
-        displayName: 'Deploy to Staging'
-        steps:
-          - script: |
-              cd env/stg
-              terraform init
-              terraform apply -auto-approve
-          - displayName: 'Deploy Terraform for Staging'
+
+jobs:
+  - job: DeployDev
+    displayName: 'Deploy to Dev'
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    variables:
+      - group: dev-grp  # Reference to the variable group for Dev
+    steps:
+      - script: |
+          git diff --name-only HEAD^ HEAD > changed_files.txt
+          if grep -q 'env/dev/' changed_files.txt; then
+            cd env/dev
+            terraform init
+            terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
+          else
+            echo "No changes in env/dev/, skipping deployment."
+          fi
+        displayName: 'Deploy Terraform for Dev'
+
+  - job: DeployQA
+    displayName: 'Deploy to QA'
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    variables:
+      - group: dev-grp  # Reference to the variable group for QA
+    steps:
+      - script: |
+          git diff --name-only HEAD^ HEAD > changed_files.txt
+          if grep -q 'env/qa/' changed_files.txt; then
+            cd env/qa
+            terraform init
+            terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
+          else
+            echo "No changes in env/qa/, skipping deployment."
+          fi
+        displayName: 'Deploy Terraform for QA'
+
+  - job: DeployStg
+    displayName: 'Deploy to Staging'
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    variables:
+      - group: dev-grp  # Reference to the variable group for Staging
+    steps:
+      - script: |
+          git diff --name-only HEAD^ HEAD > changed_files.txt
+          if grep -q 'env/stg/' changed_files.txt; then
+            cd env/stg
+            terraform init
+            terraform apply -auto-approve -var="api_key=$(ApiKey)" -var="db_name=$(DbName)"
+          else
+            echo "No changes in env/stg/, skipping deployment."
+          fi
+        displayName: 'Deploy Terraform 
