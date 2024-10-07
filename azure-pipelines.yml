@@ -20,8 +20,9 @@ jobs:
     variables:
       - group: dev-grp  # Reference to the variable group for Dev
     steps:
+      - checkout: self
       - script: |
-          git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
+          git fetch origin develop  # Fetch the develop branch
           if git diff --name-only origin/develop | grep -q 'env/dev/'; then
             cd env/dev
             terraform init
@@ -37,8 +38,9 @@ jobs:
     variables:
       - group: dev-grp  # Reference to the variable group for QA
     steps:
+      - checkout: self
       - script: |
-          git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
+          git fetch origin develop  # Fetch the develop branch
           if git diff --name-only origin/develop | grep -q 'env/qa/'; then
             cd env/qa
             terraform init
@@ -54,8 +56,9 @@ jobs:
     variables:
       - group: dev-grp  # Reference to the variable group for Staging
     steps:
+      - checkout: self
       - script: |
-          git fetch origin +refs/pull/$(System.PullRequest.PullRequestId)/merge
+          git fetch origin develop  # Fetch the develop branch
           if git diff --name-only origin/develop | grep -q 'env/stg/'; then
             cd env/stg
             terraform init
